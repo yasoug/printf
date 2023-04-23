@@ -8,7 +8,6 @@
 
 char* (*get_func(char i))(va_list);
 int _strlen(char *s);
-char *_strcpy(char *dest, char *src);
 int _printf(const char *format, ...);
 char *print_s(va_list list);
 char *print_c(va_list list);
