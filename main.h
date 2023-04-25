@@ -1,30 +1,60 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-char* (*get_func(char i))(va_list);
-int _strlen(char *s);
-char *_strcpy(char *dest, char *src);
-int _printf(const char *format, ...);
-char *print_s(va_list list);
-char *print_c(va_list list);
-
-
 /**
- * struct types - struct type
- * @id: data type to print
- * @func: pointer to functions according to identifier
+ * struct fmt - Struct for formatting data.
+ * @sym: *sym: Pointer to a character string.
+ * @fn: func pointer to a function that takes a va_list as an arg.
  */
 
-typedef struct types
+typedef struct fmt
 {
-	char id;
-	char* (*func)(va_list);
-} print;
+	char *sym;
+	int (*fn)(va_list);
+} fmt_t;
 
+typedef struct flags
+{
+	int j;
+	int plus;
+	int space;
+	int hash;
+} flags_t;
+
+int whitespaces(const char *format, int *i);
+int _printf(const char *format, ...);
+
+int (*get_print(const char *format))(va_list);
+void parse_flags(const char *format, flags_t *flags,
+				 int, int *, int *);
+
+int print_char(va_list list);
+int print_str(va_list list);
+int print_perc(va_list list);
+
+int print_int(va_list list);
+int print_unsigned(va_list list);
+
+int print_binary(va_list list);
+int print_octal(va_list list);
+int print_hex(va_list list);
+int print_HEX(va_list list);
+int print_addrs(va_list list);
+
+int print_STR(va_list list);
+int print_rev(va_list list);
+
+unsigned int _strlen(char *s);
+void reverse_str(char s[]);
+void _itoa(long n, char s[]);
+int to_base_n(unsigned long num, int base, char s[]);
+int _isdigit(int c);
+
+int _putchar(char c);
+int _puts(char *str);
 
 #endif

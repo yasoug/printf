@@ -1,17 +1,27 @@
 #include "main.h"
+
 /**
- * print_c - returns char as string
- * @list: char
- * Return: String verion of char
+ * print_char - prints a character from a va_list arg.
+ * @list: va_list arg.
+ * Return: count of characters printed.
  */
-char *print_c(va_list list)
+
+int print_char(va_list list)
 {
-	char *s;
+	_putchar(va_arg(list, int));
+	return (1);
+}
 
-	s = malloc(sizeof(char) * 2);
 
-	s[0] = va_arg(list, int);
-	s[1] = '\0';
+/**
+ * print_perc - prints a percent sign.
+ * @list: list of arguments (unused).
+ * Return: count of characters printed.
+ */
 
-	return (s);
+int print_perc(va_list list)
+{
+	(void)(list);
+	_putchar('%');
+	return (1);
 }

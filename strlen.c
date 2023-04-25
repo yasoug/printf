@@ -6,7 +6,7 @@
  * Return: the length of a string
  */
 
-int _strlen(char *s)
+unsigned int _strlen(char *s)
 {
 	if (*s)
 		return (_strlen(s + 1) + 1);

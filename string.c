@@ -1,26 +1,22 @@
 #include "main.h"
 
 /**
- * print_s - takes string and return string
- * @list: string
- * Return: string
+ * print_str - prints a string from a va_list.
+ * @list: the va_list containing the string to be printed.
+ * Return: count of characters printed.
  */
 
-char *print_s(va_list list)
+int print_str(va_list list)
 {
-	char *s;
-	char *p;
-	int len;
+	int i = 0;
+	char *str;
 
-	s = va_arg(list, char *);
-	if (s == NULL)
-		s = "(null)";
+	str = va_arg(list, char *);
+	if (!str)
+		str = "(null)";
 
-	len = _strlen(s);
+	for (; str[i]; i++)
+		_putchar(str[i]);
 
-	p = malloc(sizeof(char) * len + 1);
-	if (p == NULL)
-		return (NULL);
-
-	return (_strcpy(p, s));
+	return (i);
 }
