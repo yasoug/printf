@@ -1,33 +1,77 @@
 #include "main.h"
 
 /**
- * print_STR - prints non printable characters.
- * @list: the va_list containing the string to be printed.
- * Return: count of characters printed.
+ * char_to_upper_hex - convert num to hex lower
+ * @num: the number
+ * @len: pointer to the string length
+ *
+ * Return: 0 on succes, -1 on error
  */
-
-int print_STR(va_list list)
+int	char_to_upper_hex(int num, int *len)
 {
-	int i = 0, non_printable = 1, count = 0;
-	char *str;
-	char buffer[3];
+	int i, size = 2;
+	char *hex;
+	char *up = "0123456789ABCDEF";
 
-	str = va_arg(list, char *);
-	if (!str)
-		str = "(null)";
-
-	for (; str[i]; i++)
+	hex = malloc(size * sizeof(char));
+	if (!hex || !up)
 	{
-		non_printable = (str[i] > 0 && str[i] < 32) || (str[i] >= 127);
+		free(hex);
+		exit(-1);
+	}
 
-		if (non_printable)
+	if (num < 16)
+	{
+		*len += _printf("0%c", up[num]);
+		return (0);
+	}
+	else
+	{
+		for (i = 0; num != 0; i++)
 		{
-			(str[i] < 16) ? (count += _puts("\\x0")) : (count += _puts("\\x"));
-			buffer[0] = 'A';
-			count += to_base_n(str[i], 16, buffer);
+			hex[i] = up[num % 16];
+			hex = _realloc(hex, size * sizeof(char), (size + 1) * sizeof(char));
+			size++;
+			num /= 16;
+		}
+	}
+	hex[i] = '\0';
+	*len += _putchar(hex[i - 1]);
+	*len += _putchar(hex[i - 2]);
+	free(hex);
+	return (0);
+}
+
+/**
+ * _non_printable - prints a string with _non_printable charaterss
+ * @s: our string
+ *
+ * Return: actual string length
+ */
+int	_non_printable(char *s)
+{
+	int len, i;
+	int c;
+
+	len = 0;
+	if (!s)
+	{
+		write(1, "(null)", 6);
+		return (6);
+	}
+	for (i = 0; s[i] != '\0'; i++)
+	{
+		c = s[i];
+		if ((c > 0 && c < 32) || c >= 127)
+		{
+			len += _printf("\\x");
+			char_to_upper_hex(c, &len);
 		}
 		else
-			count += _putchar(str[i]);
+		{
+			_putchar(s[i]);
+			len++;
+		}
 	}
-	return (count);
+	return (len);
 }

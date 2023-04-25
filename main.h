@@ -1,60 +1,30 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <stdarg.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <limits.h>
 
-/**
- * struct fmt - Struct for formatting data.
- * @sym: *sym: Pointer to a character string.
- * @fn: func pointer to a function that takes a va_list as an arg.
- */
-
-typedef struct fmt
-{
-	char *sym;
-	int (*fn)(va_list);
-} fmt_t;
-
-typedef struct flags
-{
-	int j;
-	int plus;
-	int space;
-	int hash;
-} flags_t;
-
-int whitespaces(const char *format, int *i);
-int _printf(const char *format, ...);
-
-int (*get_print(const char *format))(va_list);
-void parse_flags(const char *format, flags_t *flags,
-				 int, int *, int *);
-
-int print_char(va_list list);
-int print_str(va_list list);
-int print_perc(va_list list);
-
-int print_int(va_list list);
-int print_unsigned(va_list list);
-
-int print_binary(va_list list);
-int print_octal(va_list list);
-int print_hex(va_list list);
-int print_HEX(va_list list);
-int print_addrs(va_list list);
-
-int print_STR(va_list list);
-int print_rev(va_list list);
-
-unsigned int _strlen(char *s);
-void reverse_str(char s[]);
-void _itoa(long n, char s[]);
-int to_base_n(unsigned long num, int base, char s[]);
-int _isdigit(int c);
-
-int _putchar(char c);
-int _puts(char *str);
+int	_putchar(char c);
+int	_puts(char *str);
+void	print_num(long n, int *len);
+int	_printf(const char *format, ...);
+int	print_binary(unsigned int num, int *len);
+void	*_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+void	rev_string(char *s);
+char	*_strdup(char *str);
+int	print_rev(char *s);
+void	_hexalower(unsigned long num, int *len);
+void	_hexaupper(unsigned long num, int *len);
+void	_unsigned(unsigned int n, int *len);
+int	_non_printable(char *s);
+int	char_to_upper_hex(int num, int *len);
+int	_octal(unsigned int num);
+int	flags(const char *type, int *len);
+void	custom_specifiers(va_list args, char type, int *len);
+void	non_custom_specifiers(va_list args, char type, int *len);
+int	rot13(char *s);
 
 #endif

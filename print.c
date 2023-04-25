@@ -1,66 +1,138 @@
 #include "main.h"
 
 /**
- * _printf - prints a formatted string to stdout, similar to printf.
- * @format: the format of the string to be printed.
- * This function prints a formatted string to the stdout stream. It
- * accepts a format string as its first argument and any additional arguments
- * will be used to replace format specifiers in the format string. The function
- * Return: the number of characters printed to the stdout stream.
+ * flags - check flags
+ * @type: specifier
+ * @len: string lenght
+ *
+ * Return: 1 if puts something, 0 if not
  */
-
-int _printf(const char *format, ...)
+int	flags(const char *type, int *len)
 {
-	va_list args, args_copy;
-	flags_t flags = {0};
-	int (*pfn)(va_list);
-	int i = 0, j, printed = 0, num, field_width;
-
-	if (!format)
-		return (-1);
-	va_start(args, format);
-	va_copy(args_copy, args);
-	for (; format && format[i]; i++)
+	if (*type == ' ')
 	{
-		if (format[i] == '%')
-		{
-			if (format[i++ + 1] == '\0')
-				return (-1);
-			num = va_arg(args_copy, long);
-			parse_flags(format, &flags, num, &printed, &i);
-			if (_isdigit(format[i + 1]))
-			{
-				field_width = format[i + 1] - '0';
-				for (j = i + 2; _isdigit(format[j]); j++)
-					field_width = field_width * 10 + (format[j] - '0');
-				i = j - 1;
-			}
-			if (!whitespaces(format, &i))
-				return (-1);
-			pfn = get_print(&format[i]);
-			printed += pfn ? pfn(args) : _putchar('%') + _putchar(format[i]);
-		}
-		else
-			printed += _putchar(format[i]);
+		*len += _putchar(' ');
+		return (1);
 	}
-	va_end(args);
-	va_end(args_copy);
-	return (printed);
+	else if (*type == '+')
+	{
+		*len += _putchar('+');
+		return (1);
+	}
+	else if (*type == '#')
+	{
+		if (*(type + 1) == 'o')
+			*len = _putchar('0');
+		if (*(type + 1) == 'x' || *(type + 1) == 'X')
+			*len = _printf("0x");
+		return (1);
+	}
+	return (0);
+}
+/**
+ * non_custom_specifiers- check non custom specifiers
+ * @args: argument list
+ * @type: specifier
+ * @len: string lenght
+ */
+void	non_custom_specifiers(va_list args, char type, int *len)
+{
+	if (type == 'b')
+		print_binary(va_arg(args, int), len);
+	else if (type == 'S')
+		*len += _non_printable(va_arg(args, char *));
+	else if (type == 'r')
+		*len += print_rev(va_arg(args, char *));
+	else if (type == 'R')
+		*len += rot13(va_arg(args, char *));
+	else
+	{
+		(*len) = (*len) + _putchar('%');
+		(*len) = (*len) + _putchar(type);
+	}
 }
 
 /**
- * whitespaces - Skip whitespaces in a string
- * @format: The string to be evaluated
- * @i: Pointer to the index of the character being evaluated
- * Return: 1 if valid specifer, 0 otherwise
+ * custom_specifiers - checks custom specifiers
+ * @args: arguments líst
+ * @type: specifier
+ * @len: string length
  */
-
-int whitespaces(const char *format, int *i)
+void	custom_specifiers(va_list args, char type, int *len)
 {
-	for (; format[*i + 1] == ' '; (*i)++)
-		if (format[*i + 2] == '\0')
-			return (0);
-	if (format[*i] == ' ')
-		(*i)++;
-	return (1);
+	long int n;
+
+	if (type == '%')
+	{
+		_putchar('%');
+		(*len)++;
+	}
+	else if (type == 'c')
+		(*len) = (*len) + _putchar(va_arg(args, int));
+	else if (type == 's')
+		(*len) = (*len) + _puts(va_arg(args, char *));
+	else if (type == 'd' || type == 'i')
+		print_num(va_arg(args, int), len);
+	else if (type == 'o')
+		(*len) = (*len) + _octal(va_arg(args, int));
+	else if (type == 'u')
+	{
+		n = va_arg(args, unsigned int);
+		if (n < 0)
+			n = -n;
+		print_num(n, len);
+	}
+	else if (type == 'x')
+		_hexalower(va_arg(args, unsigned int), len);
+	else if (type == 'X')
+		_hexaupper(va_arg(args, unsigned int), len);
+	else if (type == 'p')
+	{
+		void *p = va_arg(args, void *);
+
+		if (!p)
+			*len += _puts("(nil)");
+		else
+		{
+			(*len) += _puts("0x");
+			_hexalower((unsigned long)p, len);
+		}
+	}
+	else
+		non_custom_specifiers(args, type, &*len);
+}
+
+
+/**
+ * _printf - print formatted string
+ * @format: the formatted string
+ *
+ * Return: the string length
+ */
+int	_printf(const char *format, ...)
+{
+	int	i;
+	int	len;
+	va_list	args;
+
+	i = 0;
+	len = 0;
+	if (!format || (format[0] == '%' && !format[1]))
+		return (-1);
+	va_start(args, format);
+	while (format[i])
+	{
+		if (format[i] == '%')
+		{
+			i++;
+			if (flags(&format[i], &len))
+				i++;
+			custom_specifiers(args, format[i], &len);
+		}
+		else
+			len = len + _putchar(format[i]);
+		i++;
+	}
+	va_end(args);
+	return (len);
 }

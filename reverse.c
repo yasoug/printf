@@ -1,27 +1,31 @@
 #include "main.h"
+#include <stdio.h>
+#include <limits.h>
 
 /**
- * print_rev - prints a string in reverse order
- * @list: the arguments list passed to va_start()
- * Return: the number of characters printed to the stdout stream
+ * rev_string - Reverse a string
+ * @s: Our string
+ *
+ * Return: void.
  */
-
-int print_rev(va_list list)
+void rev_string(char *s)
 {
-	char *str, buffer[50];
-	int i;
+	int i, len = 0;
+	int tmp = 0;
 
-	str = va_arg(list, char *);
+	for (i = 0; s[i] != '\0'; i++)
+	{
+		len++;
+	}
 
-	if (str == NULL)
-		return (_puts("(null)"));
+	i = 0;
+	len--;
 
-	for (i = 0; str[i]; i++)
-		buffer[i] = str[i];
-
-	buffer[i] = '\0';
-
-	reverse_str(buffer);
-
-	return (_puts(buffer));
+	while (i <= len / 2)
+	{
+		tmp = s[i];
+		s[i] = s[len - i];
+		s[len - i] = tmp;
+		i++;
+	}
 }
